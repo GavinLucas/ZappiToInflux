@@ -1,0 +1,19 @@
+{
+  "myenergi": {
+    "eddi_url": "https://s18.myenergi.net/cgi-jstatus-E",
+    "zappi_url": "https://s18.myenergi.net/cgi-jstatus-Z",
+    "harvi_url": "https://s18.myenergi.net/cgi-jstatus-H",
+    "status_url": "https://s18.myenergi.net/cgi-jstatus-*",
+    "serial": "your_zappi_serial",
+    "apikey": "your_api_key",
+    "timout": 5
+  },
+"influx": {
+    "url": "https://influx.example.com:8086",
+    "db": "myenergi_db",
+    "user": "your_influx_user",
+    "password": "your_influx_password",
+    "timeout": 5
+  },
+  "interval": 300
+}
