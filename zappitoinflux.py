@@ -120,7 +120,9 @@ def parse_zappi_data():
     myenergi_data = get_data_from_myenergi(settings["myenergi"]["zappi_url"])
 
     now = datetime.datetime.now()
-    day_data = dayhour_results(now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"), now.strftime("%H").lstrip('0'))
+    day_data = dayhour_results(
+        now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"), now.strftime("%H").lstrip("0")
+    )
 
     # just extract the specific fields we want here
     if "zappi_fields" in settings["myenergi"]:
