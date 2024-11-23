@@ -57,10 +57,10 @@ def get_data_from_myenergi(url):
     if response.status_code == 200:
         pass  # "Login successful..")
     elif response.status_code == 401:
-        print("Login unsuccessful!!! Please check username, password or URL..")
+        print("Login unsuccessful. Please check username, password or URL.")
         sys.exit(2)
     else:
-        print("Login unsuccessful, returned code: " + str(response.status_code))
+        print("Login unsuccessful. Return code: " + str(response.status_code))
         sys.exit(2)
     return response.json()
 
