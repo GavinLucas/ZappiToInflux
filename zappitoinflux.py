@@ -22,8 +22,6 @@ except json.decoder.JSONDecodeError as e:
     print(f"Error in settings.json - {e}")
     sys.exit(1)
 
-dayhour_url = "https://s18.myenergi.net/cgi-jdayhour-Z" + settings["myenergi"]["serial"]
-
 
 def signal_handler(sig, frame):
     """
@@ -55,30 +53,34 @@ def get_data_from_myenergi(url):
         auth=HTTPDigestAuth(settings["myenergi"]["serial"], settings["myenergi"]["apikey"]),
         timeout=settings["myenergi"].get("timeout", 5),
     )
+
     if response.status_code == 200:
         pass  # "Login successful..")
     elif response.status_code == 401:
-        print("Login unsuccessful!!! Please check username, password or URL..")
+        print("Login unsuccessful. Please check username, password or URL.")
         sys.exit(2)
     else:
-        print("Login unsuccessful, returned code: " + str(response.status_code))
+        print("Login unsuccessful. Return code: " + str(response.status_code))
         sys.exit(2)
     return response.json()
 
 
-def day_results(day, month, year):
+def dayhour_results(year, month, day, hour=None):
     """
     Get the data for a specific day
 
-    :param day:
-    :type day:
-    :param month:
-    :type month:
     :param year:
-    :type year:
+    :type year: str
+    :param month:
+    :type month: str
+    :param day:
+    :type day: str
+    :param hour:
+    :type hour: str
     :return:
     :rtype: dict
     """
+    dayhour_url = settings["myenergi"]["dayhour_url"] + settings["myenergi"]["serial"]
     response_data = get_data_from_myenergi(dayhour_url + "-" + str(year) + "-" + str(month) + "-" + str(day))
     charge_amount = 0
     import_amount = 0
@@ -87,6 +89,12 @@ def day_results(day, month, year):
 
     if response_data.get("U" + settings["myenergi"]["serial"], False):
         for item in response_data["U" + settings["myenergi"]["serial"]]:
+            if hour and item.get("hr", -1) == int(hour):
+                charge_amount = item.get("h1d", 0)
+                import_amount = item.get("imp", 0)
+                export_amount = item.get("exp", 0)
+                genera_amount = item.get("gep", 0)
+                break
             charge_amount += item.get("h1d", 0)
             import_amount += item.get("imp", 0)
             export_amount += item.get("exp", 0)
@@ -112,10 +120,19 @@ def parse_zappi_data():
     myenergi_data = get_data_from_myenergi(settings["myenergi"]["zappi_url"])
 
     now = datetime.datetime.now()
-    day_data = day_results(now.strftime("%d"), now.strftime("%m"), now.strftime("%Y"))
+    day_data = dayhour_results(
+        now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"), now.strftime("%H").lstrip("0")
+    )
 
-    # may want to just extract the specific data we want here
-    zappi_data = myenergi_data["zappi"][0]
+    # just extract the specific fields we want here
+    if "zappi_fields" in settings["myenergi"]:
+        zappi_data = dict(
+            (k, myenergi_data["zappi"][0][k])
+            for k in settings["myenergi"]["zappi_fields"]
+            if k in myenergi_data["zappi"][0]
+        )
+    else:
+        zappi_data = myenergi_data["zappi"][0]
 
     return zappi_data | day_data
 
@@ -167,7 +184,7 @@ def main():
         "--dump",
         required=False,
         action="store_true",
-        help="dump the Zappi data from myenergi to the console (excludes power usage data)",
+        help="dump the Zappi data from myenergi to the console",
     )
     arg_parse.add_argument(
         "-p",
@@ -180,8 +197,8 @@ def main():
 
     # dump the data if required and exit
     if args.dump:
-        hue_data = get_data_from_myenergi(settings["myenergi"]["zappi_url"])
-        print(json.dumps(hue_data, indent=4))
+        zappi_data = parse_zappi_data()
+        print(json.dumps(zappi_data, indent=4))
         sys.exit(0)
 
     # main loop to collect and send data to InfluxDB

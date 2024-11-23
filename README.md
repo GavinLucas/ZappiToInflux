@@ -1,10 +1,16 @@
 ZappiToInflux
-===========
+=============
 
 https://github.com/GavinLucas/ZappiToInflux
------------------------------------------
+-------------------------------------------
 
 Script to take data from a MyEnergi Zappi and post it to InfluxDB in order to view the data in Grafana.
+
+Information on how to obtain your API key is available here:
+https://support.myenergi.com/hc/en-gb/articles/5069627351185-How-do-I-get-an-API-key
+
+Some information on the API fields is available here:
+https://github.com/twonk/MyEnergi-App-Api
 
 To run the script:
 - copy settings.json.example to settings.json
