@@ -101,10 +101,10 @@ def dayhour_results(year, month, day, hour=None):
             genera_amount += item.get("gep", 0)
 
     data = {
-        "Charge": (charge_amount / 3600 / 1000),
-        "Import": (import_amount / 3600 / 1000),
-        "Export": (export_amount / 3600 / 1000),
-        "Genera": (genera_amount / 3600 / 1000),
+        "Charge": round((charge_amount / 3600 / 1000), 4),
+        "Import": round((import_amount / 3600 / 1000), 4),
+        "Export": round((export_amount / 3600 / 1000), 4),
+        "Genera": round((genera_amount / 3600 / 1000), 4),
     }
 
     return data

@@ -17,6 +17,8 @@ To run the script:
   - Change the permissions of the file, e.g. `chmod 600 settings.json`, so that it's not readable 
   by other users
   - Fill in the values for your Zappi and InfluxDB
+  - 'zappi_fields' is a list of fields from the zappi data to send to influx.  If you remove this from the JSON file,
+  all fields will be sent. 
   - Set the 'interval' to the number of seconds between each data collection
 - Install the requirements with `pip install -r requirements.txt`
 - Leave the script running in a screen session and sit back and watch the data roll in.
