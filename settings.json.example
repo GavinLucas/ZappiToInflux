@@ -8,7 +8,7 @@
     "serial": "your_zappi_serial",
     "apikey": "your_api_key",
     "timout": 5,
-    "zappi_fields":  ["frq", "vol", "gen", "grd", "che", "pst", "sta", "wifiLink", "ethernetLink", "newAppAvailable", "newBootloaderAvailable"]
+    "zappi_fields":  ["frq", "vol", "gen", "grd", "che", "sta", "wifiLink", "ethernetLink", "newAppAvailable", "newBootloaderAvailable"]
   },
 "influx": {
     "url": "https://influx.example.com:8086",
